@@ -10,11 +10,11 @@ import scala.concurrent.Future
 
 trait DataGenerator {
 
-  def generateNumbers(path: String, rowsAmount: Int = 10000): Future[IOResult] = {
+  def generateNumbers(path: String, rowsAmount: Int): Future[IOResult] = {
     generateRows(path, rowsAmount, Gen.numStr.sample.get)
   }
 
-  def generateRows(path: String, rowsAmount: Int = 10000, generateRule: => String) = {
+  def generateRows(path: String, rowsAmount: Int, generateRule: => String) = {
     val file = Paths.get(path)
     val realRowsAmount = scala.math.max(1, rowsAmount)
 

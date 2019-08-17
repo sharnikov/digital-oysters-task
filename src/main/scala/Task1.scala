@@ -1,16 +1,6 @@
 import java.io.File
-import java.nio.file.Paths
-import java.util.concurrent.Executors
 
-import akka.actor.ActorSystem
-import akka.stream.{ActorMaterializer, IOResult}
-import akka.stream.scaladsl.{FileIO, Flow, Framing, Source}
-import akka.util.ByteString
-import org.scalacheck.Gen
-
-import scala.concurrent.{ExecutionContext, Future}
-import scala.util.Success
-import scala.util.matching.Regex
+import scala.util.{Failure, Success}
 import TasksImplicits._
 import com.typesafe.config.ConfigFactory
 
@@ -19,35 +9,26 @@ object Task1 extends Settings(ConfigFactory.parseFile(new File("src/main/resourc
   with DataGenerator
   with DataExtractor {
 
-  val number: Regex = "(\\d+)".r
-  val digitsSet = ('0' to '9').toSet
-
-  def containsAllNumbers(number: String): Boolean =
-    (digitsSet -- number.toSet).isEmpty
-
-  def isNumber(maybeNumber: String): Boolean = maybeNumber match {
-    case number(_) => true
-    case _ => false
+  val mapPandigitalToOne = new PartialFunction[String, Int] {
+    val digits = ('0' to '9').toSet
+    override def isDefinedAt(input: String): Boolean =  digits.diff(input.toSet).isEmpty
+    override def apply(value: String): Int = 1
   }
 
-  def calculatePandigitalNumbers(path: String)= {
-    getDataSource(path)
-      .collect { case string if isNumber(string) && containsAllNumbers(string) =>
-        println(string)
-        1
-      }.runFold(0)(_ + _)
+  def countPandigitalNumbers(path: String)= {
+    getDataSource(path, extractor.frameLength, extractor.delimiter)
+      .collect(mapPandigitalToOne)
+      .runFold(0)(_ + _)
   }
 
-  val result = for {
-    _ <- generateNumbers(paths().numbersFilePath(), extractor().frameLength)
-    value <- calculatePandigitalNumbers(paths().numbersFilePath())
-  } yield value
-
-  result.onComplete {
-    case Success(value) =>
-      println(s"Amount is = $value")
-      system.terminate()
-    case _ =>
-      system.terminate()
-  }
+  generateNumbers(paths.numbersFilePath, extractor.frameLength)
+    .flatMap(_ => countPandigitalNumbers(paths.numbersFilePath))
+    .onComplete {
+      case Success(value) =>
+        println(s"Amount is = $value")
+        system.terminate()
+      case Failure(exception) =>
+        println(s"Failed with $exception")
+        system.terminate()
+    }
 }

@@ -9,9 +9,11 @@ import scala.concurrent.Future
 
 trait DataExtractor {
 
-  def getDataSource(path: String): Source[String, Future[IOResult]] = {
+  def getDataSource(path: String,
+                    maximumFrameLength: Int,
+                    delimiter: String = "\n"): Source[String, Future[IOResult]] = {
     FileIO.fromPath(Paths.get(path))
-      .via(Framing.delimiter(ByteString("\n"), allowTruncation = true, maximumFrameLength = 1000))
-      .mapAsync(4)(value => Future { value.utf8String })
+      .via(Framing.delimiter(ByteString(delimiter), allowTruncation = true, maximumFrameLength = maximumFrameLength))
+      .map(_.utf8String)
   }
 }
