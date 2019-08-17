@@ -1,3 +1,5 @@
+package utils
+
 import java.util.concurrent.Executors
 
 import akka.actor.ActorSystem

@@ -1,6 +1,7 @@
+package utils
+
 import com.typesafe.config.Config
 import net.ceedubs.ficus.Ficus._
-
 
 abstract class Settings(config: Config) {
   def extractor: Extractor = new ExtractorImpl(config.as[Config]("extractor"))
@@ -11,6 +12,7 @@ trait Extractor {
   def frameLength: Int
   def delimiter: String
 }
+
 
 class ExtractorImpl(config: Config) extends Extractor {
   override def frameLength: Int = config.getInt("frame.length")

@@ -1,6 +1,7 @@
+package utils
+
 import java.nio.file.Paths
 
-import TasksImplicits._
 import akka.stream.IOResult
 import akka.stream.scaladsl.{FileIO, Framing, Source}
 import akka.util.ByteString

@@ -1,8 +1,9 @@
 import java.io.File
 
 import scala.util.{Failure, Success}
-import TasksImplicits._
 import com.typesafe.config.ConfigFactory
+import utils.{DataExtractor, DataGenerator, Settings}
+import utils.TasksImplicits._
 
 object Task1 extends Settings(ConfigFactory.parseFile(new File("src/main/resources/app.conf")))
   with App

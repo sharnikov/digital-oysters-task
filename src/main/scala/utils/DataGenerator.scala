@@ -1,10 +1,13 @@
+package utils
+
 import java.nio.file.Paths
 
+import akka.stream.IOResult
 import akka.stream.scaladsl.{FileIO, Source}
 import akka.util.ByteString
 import org.scalacheck.Gen
-import TasksImplicits._
-import akka.stream.IOResult
+import utils.TasksImplicits._
+
 
 import scala.concurrent.Future
 
