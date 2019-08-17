@@ -13,7 +13,6 @@ trait Extractor {
   def delimiter: String
 }
 
-
 class ExtractorImpl(config: Config) extends Extractor {
   override def frameLength: Int = config.getInt("frame.length")
   override def delimiter: String = config.getString("delimiter")

@@ -17,7 +17,7 @@ trait DataGenerator {
     generateRows(path, rowsAmount, Gen.numStr.sample.get)
   }
 
-  def generateRows(path: String, rowsAmount: Int, generateRule: => String) = {
+  def generateRows(path: String, rowsAmount: Int, generateRule: => String): Future[IOResult] = {
     val file = Paths.get(path)
     val realRowsAmount = scala.math.max(1, rowsAmount)
 
