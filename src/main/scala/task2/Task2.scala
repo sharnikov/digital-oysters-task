@@ -44,7 +44,7 @@ object Task2 extends Settings(ConfigFactory.parseFile(new File("src/main/resourc
       .collect(infoGetterV2)
       .runFold(Vector.empty[Film])(mergeIntoVector)
 
-  aggregateFilmsInfoParallel(paths.filmsFilePath)
+  aggregateFilmsInfoWithVector(paths.filmsFilePath)
     .onComplete {
       case Success(value) =>
         println(value.foreach(println))
