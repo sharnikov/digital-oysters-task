@@ -43,7 +43,7 @@ object Task2 extends Settings(ConfigFactory.parseFile(new File("src/main/resourc
   def aggregateFilmsInfoWithVector(path: String) =
     getDataSource(path, extractor.frameLength, extractor.delimiter)
       .collect(infoGetterV2)
-      .runFold(Vector.empty[Film])((acc, newElement) => mergeIntoVector(acc, newElement, merge))
+      .runFold(Vector.empty[Film])(mergeIntoVector)
 
   aggregateFilmsInfoWithVector(paths.filmsFilePath)
     .onComplete {
