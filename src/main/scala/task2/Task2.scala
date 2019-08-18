@@ -58,5 +58,4 @@ object Task2 extends Settings(ConfigFactory.parseFile(new File("src/main/resourc
         println(s"Failed with $exception")
         system.terminate()
     }
-
 }

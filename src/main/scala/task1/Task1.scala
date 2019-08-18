@@ -14,8 +14,8 @@ object Task1 extends Settings(ConfigFactory.parseFile(new File("src/main/resourc
   with DataExtractor {
 
   val mapPandigitalToOne = new PartialFunction[String, Int] {
-    val digits = ('0' to '9').toSet
-    override def isDefinedAt(input: String): Boolean =  digits.diff(input.toSet).isEmpty
+    private val digits = ('0' to '9').toSet
+    override def isDefinedAt(input: String): Boolean =  digits.diff(input.dropWhile(_ == '0').toSet).isEmpty
     override def apply(value: String): Int = 1
   }
 

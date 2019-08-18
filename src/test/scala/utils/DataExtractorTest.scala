@@ -13,7 +13,7 @@ class DataExtractorTest extends TestKit(ActorSystem("MySpec")) with TestStuff {
     implicit val materializer = ActorMaterializer()
     val extractor = new DataExtractor {}
 
-    val result = extractor.getDataSource("src/test/resources/test-numbers.txt", 1000)
+    val result = extractor.getDataSource("src/test/resources/test-numbers.txt", maximumFrameLength = 1000)
       .runWith(Sink.collection)
 
     await(result) shouldBe List("924", "4314", "234324", "0123456789", "12124324", "12414", "672fddf", "543dffd",
