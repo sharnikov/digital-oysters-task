@@ -16,7 +16,8 @@ import scala.util.{Failure, Success}
 //TODO test
 object Task2 extends Settings(ConfigFactory.parseFile(new File("src/main/resources/app.conf")))
   with App
-  with DataExtractor {
+  with DataExtractor
+  with VectorMerger {
 
   val infoGetterV1 = new PartialFunction[String, List[String]] {
     override def isDefinedAt(value: String): Boolean = value.split(',').nonEmpty
@@ -42,7 +43,7 @@ object Task2 extends Settings(ConfigFactory.parseFile(new File("src/main/resourc
   def aggregateFilmsInfoWithVector(path: String) =
     getDataSource(path, extractor.frameLength, extractor.delimiter)
       .collect(infoGetterV2)
-      .runFold(Vector.empty[Film])(mergeIntoVector)
+      .runFold(Vector.empty[Film])((acc, newElement) => mergeIntoVector(acc, newElement, merge))
 
   aggregateFilmsInfoWithVector(paths.filmsFilePath)
     .onComplete {
