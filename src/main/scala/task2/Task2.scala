@@ -31,11 +31,16 @@ object Task2 extends Settings(ConfigFactory.parseFile(new File("src/main/resourc
     }
   }
 
+  private def parseSample(sample: Seq[List[String]]): Map[String, Set[String]] =
+    sample
+      .groupBy(_.head)
+      .mapValues(_.map(_.tail.map(_.trim).toSet).foldLeft(Set.empty[String])(_ |+| _))
+
   def aggregateFilmsInfoParallel(path: String)=
     getDataSource(path, extractor.frameLength, extractor.delimiter)
       .collect(infoGetterV1)
       .groupedWithin(films.chunkSize, films.chunkTime)
-      .mapAsync(films.streamsParallelism)(sample => Future { sample.groupMapReduce(_.head)(_.tail.toSet)(_ |+| _) })
+      .mapAsync(films.streamsParallelism)(sample => Future(parseSample(sample)))
       .runFold(Map.empty[String, Set[String]])(_ |+| _)
       .map(_.toList.sortBy(_._1))
 
@@ -44,7 +49,7 @@ object Task2 extends Settings(ConfigFactory.parseFile(new File("src/main/resourc
       .collect(infoGetterV2)
       .runFold(Vector.empty[Film])(mergeIntoVector)
 
-  aggregateFilmsInfoWithVector(paths.filmsFilePath)
+  aggregateFilmsInfoParallel(paths.filmsFilePath)
     .onComplete {
       case Success(value) =>
         println(value.foreach(println))
