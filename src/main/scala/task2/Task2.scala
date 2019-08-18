@@ -13,7 +13,6 @@ import Film._
 import scala.concurrent.Future
 import scala.util.{Failure, Success}
 
-//TODO test
 object Task2 extends Settings(ConfigFactory.parseFile(new File("src/main/resources/app.conf")))
   with App
   with DataExtractor
