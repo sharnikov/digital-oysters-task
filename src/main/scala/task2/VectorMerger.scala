@@ -3,8 +3,8 @@ package task2
 trait VectorMerger {
 
   def mergeIntoVector[T <: Mergeable[T]](vector: Vector[T],
-                         newElement: T)
-                        (implicit ord: Ordering[T]): Vector[T] = vector.size match {
+                                         newElement: T)
+                                        (implicit ord: Ordering[T]): Vector[T] = vector.size match {
     case 0 => Vector(newElement)
     case 1 if ord.equiv(vector.head, newElement) => Vector(vector.head.merge(newElement))
     case 1 => if (ord.gt(vector.head, newElement)) Vector(newElement, vector.head) else Vector(vector.head, newElement)
